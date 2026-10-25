@@ -118,6 +118,7 @@ img { display: block; max-width: 100%; height: auto; }
   color: var(--text-2);
   max-width: 34em;
   margin: 0 auto 32px;
+  text-wrap: balance;
 }
 .badge { display: inline-block; }
 .badge img { height: 54px; width: auto; }
@@ -328,3 +329,23 @@ footer .legal { margin-top: 16px; line-height: 1.6; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* ---------- Text pages (support, privacy) ---------- */
+
+.doc-head {
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--bg) 100%);
+  padding: 64px 0 40px;
+}
+.doc-head .wrap, .doc .wrap { max-width: 720px; }
+.doc-head h1 { font-size: clamp(36px, 5vw, 48px); letter-spacing: -0.025em; line-height: 1.1; margin: 0 0 10px; text-wrap: balance; }
+.doc-head .meta { color: var(--text-3); font-size: 15px; margin: 0; }
+.doc { padding: 8px 0 88px; }
+.doc p, .doc li { color: var(--text-2); }
+.doc p { margin: 0 0 16px; }
+.doc strong { color: var(--text); }
+.doc h2 { font-size: 26px; letter-spacing: -0.015em; margin: 48px 0 14px; padding-top: 28px; border-top: 1px solid var(--rule); }
+.doc h3 { font-size: 18px; margin: 32px 0 8px; }
+.doc ul { padding-left: 1.2em; margin: 0 0 16px; }
+.doc li { margin: 6px 0; }
+.doc code { font: 15px ui-monospace, "SF Mono", Menlo, monospace; background: var(--card); border: 1px solid var(--rule); border-radius: 6px; padding: 1px 6px; }
+.doc .lead { font-size: 19px; line-height: 1.5; color: var(--text); }
