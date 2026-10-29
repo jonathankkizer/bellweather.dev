@@ -21,7 +21,7 @@ def page(slug, title, description, body):
   <link rel="canonical" href="https://bellweather.dev/{slug}">
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="/assets/style.css?v=2">
 </head>
 <body>
 
