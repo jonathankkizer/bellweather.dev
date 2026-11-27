@@ -161,8 +161,14 @@ def summary(words, element, m, station):
         first = f"{days} brought {reading(m['value'], element, prose=True)} of {w['noun'].lower()}"
     if m.get("floor"):
         return f"{days} brought no {w['noun'].lower()}. {m['floor']}."
-    return (f"{first}, {departure(m, element, prose=True)}. "
-            f"{m['above']} of {m['count']} years were {w['more']}, and {m['below']} were {w['less']}.")
+    first = f"{first}, {departure(m, element, prose=True)}. "
+
+    def were(word):
+        # "were warmer", but "had less snow".
+        return f"had {word}" if word.startswith("less ") else f"were {word}"
+    if m["above"] == 0 or m["below"] == 0:
+        return first + f"None of the other {m['count']} years {were(w['more'] if m['above'] == 0 else w['less'])}."
+    return first + f"{m['above']} of {m['count']} years {were(w['more'])}, and {m['below']} {were(w['less'])}."
 
 
 def meta_description(city, words, m):
@@ -353,8 +359,13 @@ def city_page(city, words, neighbours, nav, footer):
   <div class="wrap">
     <p class="crumbs"><a href="/weather/">Cities</a> › <a href="/weather/{city["state"].lower()}/">{esc(state)}</a></p>
     <h1>Is the weather in {esc(name)} normal right now?</h1>
-    <p class="verdict">{esc(hero["verdict"])}</p>
-    <p class="lede">{esc(summary(words, "avgt", hero, station))}</p>
+    <div class="read">
+      <p class="numeral" aria-label="{percentile(hero)} percentile">{percentile(hero)[:-2]}<sup>{percentile(hero)[-2:]}</sup><small>percentile</small></p>
+      <div>
+        <p class="verdict">{esc(hero["verdict"])}</p>
+        <p class="lede">{esc(summary(words, "avgt", hero, station))}</p>
+      </div>
+    </div>
     <p class="fine">Through {long_date(hero["end"])} · {esc(station)} station · Records since {city["since"]}</p>
   </div>
 </header>
@@ -371,6 +382,8 @@ def city_page(city, words, neighbours, nav, footer):
 
     <h2 class="group">The last 90 days against every year on record</h2>
     {"".join(sections)}
+
+    <p class="in-app">The app draws each of these 90 days against the station's history, and lets you change the stretch and the years it is compared with. <a href="{STORE}">Bell Weather on the App Store</a></p>
 
     <section class="notes">
       <h2>How this is worked out</h2>
