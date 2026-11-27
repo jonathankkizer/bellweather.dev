@@ -1,0 +1,47 @@
+name: Site
+
+# Builds and deploys bellweather.dev. The static pages are in the repo; the
+# city pages under /weather/ are written at build time from a digest the app
+# repo publishes each day (see tools/cities.py). If the digest can't be
+# fetched the run fails and the site stays as it was.
+
+on:
+  schedule:
+    # Half an hour after each of the app repo's digest runs.
+    - cron: "7 15 * * *"
+    - cron: "7 23 * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch digest
+        run: curl --fail --silent --show-error --compressed --retry 3 -o digest.json https://data.bellweather.dev/site/v1/cities.json
+
+      - name: Build
+        run: python3 tools/cities.py --digest digest.json --out _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
